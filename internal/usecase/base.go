@@ -16,7 +16,7 @@ type (
 	}
 
 	base[T any] struct {
-		modelPsqlGormBase modelPsqlGorm.Base[T] //myst not pointer
+		modelPsqlGormBase modelPsqlGorm.Base[T]
 	}
 )
 

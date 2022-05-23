@@ -20,8 +20,8 @@ type (
 
 func NewUser(f *factory.Factory) User {
 	return &user{
-		Base:              f.Model.ModelPsqlGormUser,
-		modelPsqlGormUser: f.Model.ModelPsqlGormUser,
+		Base:              NewBase[entity.User](f.Model.PsqlGorm.User),
+		modelPsqlGormUser: f.Model.PsqlGorm.User,
 	}
 }
 

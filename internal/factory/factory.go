@@ -12,7 +12,9 @@ type (
 		ConnectionGorm *gorm.DB
 
 		Model struct {
-			ModelPsqlGormUser modelPsqlGorm.User
+			PsqlGorm struct {
+				User modelPsqlGorm.User
+			}
 		}
 	}
 )
@@ -20,7 +22,7 @@ type (
 func NewFactory() *Factory {
 	f := &Factory{}
 	f.SetupDb()
-	f.SetupModel()
+	f.SetupModelPsqlGorm()
 
 	return f
 }
@@ -38,11 +40,10 @@ func (f *Factory) SetupDb() {
 	f.ConnectionGorm = dbGorm
 }
 
-func (f *Factory) SetupModel() {
+func (f *Factory) SetupModelPsqlGorm() {
 	if f.ConnectionGorm == nil {
 		panic("Failed setup model, db is undefined")
 	}
 
-	// modelPsqlGormBase := modelPsqlGorm.NewBase[entity.Entities](dbGorm)
-	f.Model.ModelPsqlGormUser = modelPsqlGorm.NewUser(f.ConnectionGorm)
+	f.Model.PsqlGorm.User = modelPsqlGorm.NewUser(f.ConnectionGorm)
 }

@@ -21,7 +21,7 @@ type (
 
 func NewUser(f *factory.Factory) User {
 	return &user{
-		model: f.Model.ModelPsqlGormUser,
+		model: f.Model.PsqlGorm.User,
 	}
 }
 

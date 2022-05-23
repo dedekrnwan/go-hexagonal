@@ -1,0 +1,23 @@
+server: 
+  appname: eclaim-core
+  appkey: passphrasewhichneedstobe32bytes!
+  port: 3001
+  version: 1.0.1
+
+swagger:
+  swaggerscheme: https
+  swaggerprefix: 
+  
+jwt: 
+  secret: secretkey
+
+databases:
+  - dbhost: localhost
+    dbuser: postgres
+    dbport: 5432
+    dbpass: 
+    dbname: postgres
+    dbprovider: postgresql
+    dbssl: disable
+    dbtz: Asia/Jakarta
+    dbautomigrate: true

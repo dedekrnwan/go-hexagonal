@@ -68,9 +68,16 @@ func Init() {
 	}
 }
 
-func Connection(name string) (interface{}, error) {
-	if dbConnections[strings.ToUpper(name)] == nil {
+func Connection[T any](name string) (*T, error) {
+	conn := dbConnections[strings.ToUpper(name)]
+	if conn == nil {
 		return nil, errors.New("Connection is undefined")
 	}
-	return dbConnections[strings.ToUpper(name)], nil
+
+	connection, ok := conn.(*T)
+	if !ok {
+		return nil, errors.New("error parsing connection to generics type")
+	}
+
+	return connection, nil
 }

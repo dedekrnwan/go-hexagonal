@@ -2,8 +2,7 @@ package usecase
 
 import (
 	"go-boiler-clean/entity"
-	"go-boiler-clean/internal/factory"
-	modelPsqlGorm "go-boiler-clean/internal/model/psqlGorm"
+	"go-boiler-clean/internal/model"
 )
 
 type (
@@ -14,14 +13,16 @@ type (
 	user struct {
 		Base[entity.User]
 
-		modelPsqlGormUser modelPsqlGorm.User
+		modelUser model.User
 	}
 )
 
-func NewUser(f *factory.Factory) User {
+func NewUser(
+	modelUser model.User,
+) User {
 	return &user{
-		Base:              NewBase[entity.User](f.Model.PsqlGorm.User),
-		modelPsqlGormUser: f.Model.PsqlGorm.User,
+		Base:      NewBase[entity.User](modelUser),
+		modelUser: modelUser,
 	}
 }
 

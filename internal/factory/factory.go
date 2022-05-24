@@ -1,8 +1,8 @@
 package factory
 
 import (
-	"go-boiler-clean/database"
-	modelPsqlGorm "go-boiler-clean/internal/model/psqlGorm"
+	adapter "go-boiler-clean/internal/adapter"
+	"go-boiler-clean/internal/database"
 
 	"gorm.io/gorm"
 )
@@ -11,39 +11,40 @@ type (
 	Factory struct {
 		ConnectionGorm *gorm.DB
 
-		Model struct {
-			PsqlGorm struct {
-				User modelPsqlGorm.User
-			}
+		Adapter struct {
+			OutBound *adapter.OutBound
 		}
 	}
 )
 
 func NewFactory() *Factory {
 	f := &Factory{}
-	f.SetupDb()
-	f.SetupModelPsqlGorm()
+	f.setupDb()
+	// f.SetupModelPsqlGorm()
+	f.setupAdapterOutBound()
 
 	return f
 }
 
-func (f *Factory) SetupDb() {
+func (f *Factory) setupDb() {
+	database.Init()
+
 	conn := "postgres"
-	db, err := database.Connection(conn)
+	db, err := database.Connection[gorm.DB](conn)
 	if err != nil {
 		panic("Failed setup db, connection is undefined")
 	}
-	dbGorm, ok := db.(*gorm.DB)
-	if !ok {
-		panic("Failed setup db, db is not gorm")
-	}
-	f.ConnectionGorm = dbGorm
+	f.ConnectionGorm = db
 }
 
-func (f *Factory) SetupModelPsqlGorm() {
-	if f.ConnectionGorm == nil {
-		panic("Failed setup model, db is undefined")
-	}
-
-	f.Model.PsqlGorm.User = modelPsqlGorm.NewUser(f.ConnectionGorm)
+func (f *Factory) setupAdapterOutBound() {
+	f.Adapter.OutBound = adapter.NewOutBound(f.ConnectionGorm)
 }
+
+// func (f *Factory) SetupModelPsqlGorm() {
+// 	if f.ConnectionGorm == nil {
+// 		panic("Failed setup model, db is undefined")
+// 	}
+
+// 	f.Model.PsqlGorm.User = modelPsqlGorm.NewUser(f.ConnectionGorm)
+// }

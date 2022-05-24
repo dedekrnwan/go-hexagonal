@@ -2,7 +2,7 @@ package user
 
 import (
 	"go-boiler-clean/entity"
-	dtoHttpEcho "go-boiler-clean/internal/adapters/http_echo/dto"
+	dtoHttpEcho "go-boiler-clean/internal/adapter/inbound/http_echo/dto"
 	"go-boiler-clean/internal/factory"
 	"go-boiler-clean/internal/usecase"
 	"go-boiler-clean/pkg/util/response"
@@ -17,7 +17,7 @@ type handler struct {
 
 func NewHandler(f *factory.Factory) *handler {
 	return &handler{
-		usecaseUser: usecase.NewUser(f),
+		usecaseUser: usecase.NewUser(f.Adapter.OutBound.Gorm.User),
 	}
 }
 

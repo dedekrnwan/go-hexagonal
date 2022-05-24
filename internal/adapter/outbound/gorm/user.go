@@ -1,4 +1,4 @@
-package modelPsqlGorm
+package adapterOutBoundGorm
 
 import (
 	"context"

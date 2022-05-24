@@ -2,8 +2,8 @@ package http_echo
 
 import (
 	"fmt"
-	"go-boiler-clean/internal/adapters/http_echo/handler/transaction"
-	"go-boiler-clean/internal/adapters/http_echo/handler/user"
+	"go-boiler-clean/internal/adapter/inbound/http_echo/handler/transaction"
+	"go-boiler-clean/internal/adapter/inbound/http_echo/handler/user"
 	"go-boiler-clean/internal/factory"
 	"net/http"
 

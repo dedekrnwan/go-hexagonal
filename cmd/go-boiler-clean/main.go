@@ -1,10 +1,7 @@
 package main
 
 import (
-	"context"
-	"go-boiler-clean/database"
-	"go-boiler-clean/database/seeder"
-	"go-boiler-clean/internal/adapters/http_echo"
+	"go-boiler-clean/internal/adapter/inbound/http_echo"
 	"go-boiler-clean/internal/config"
 	"go-boiler-clean/internal/factory"
 	"go-boiler-clean/pkg/util"
@@ -28,23 +25,11 @@ func init() {
 }
 
 func main() {
-	ctx := context.Background()
 
-	initDatabase()
+	//initialize all needs (db conn, adapter outbound)
 	f := initFactory()
 
-	//seder
-	seeder := seeder.NewSeeder(f)
-	err := seeder.Seed(ctx, 100)
-	if err != nil {
-		ctx.Done()
-		os.Exit(1)
-	}
 	initHttp(f)
-}
-
-func initDatabase() {
-	database.Init()
 }
 
 func initFactory() *factory.Factory {

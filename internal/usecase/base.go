@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 	"go-boiler-clean/dto"
-	modelPsqlGorm "go-boiler-clean/internal/model/psqlGorm"
+	"go-boiler-clean/internal/model"
 )
 
 type (
@@ -16,33 +16,33 @@ type (
 	}
 
 	base[T any] struct {
-		modelPsqlGormBase modelPsqlGorm.Base[T]
+		modelBase model.Base[T]
 	}
 )
 
-func NewBase[T any](modelPsqlGormBase modelPsqlGorm.Base[T]) Base[T] {
+func NewBase[T any](modelBase model.Base[T]) Base[T] {
 	return &base[T]{
-		modelPsqlGormBase,
+		modelBase,
 	}
 }
 
 func (u *base[T]) Find(ctx context.Context, search string, filters []dto.Filter, ascending []string, descending []string, pagination dto.Pagination) ([]T, *dto.PaginationInfo, error) {
-	return u.modelPsqlGormBase.Find(ctx, search, filters, ascending, descending, pagination)
+	return u.modelBase.Find(ctx, search, filters, ascending, descending, pagination)
 }
 
 func (u *base[T]) FindOne(ctx context.Context, id int) (*T, error) {
-	return u.modelPsqlGormBase.FindOne(ctx, id)
+	return u.modelBase.FindOne(ctx, id)
 
 }
 
 func (u *base[T]) CreateOne(ctx context.Context, data *T) (*T, error) {
-	return u.modelPsqlGormBase.CreateOne(ctx, data)
+	return u.modelBase.CreateOne(ctx, data)
 }
 
 func (u *base[T]) UpdateOne(ctx context.Context, id int, data *T) (*T, error) {
-	return u.modelPsqlGormBase.UpdateOne(ctx, id, data)
+	return u.modelBase.UpdateOne(ctx, id, data)
 }
 
 func (u *base[T]) DeleteOne(ctx context.Context, id int) error {
-	return u.modelPsqlGormBase.DeleteOne(ctx, id)
+	return u.modelBase.DeleteOne(ctx, id)
 }

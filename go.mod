@@ -29,7 +29,6 @@ require (
 )
 
 require (
-	github.com/bxcodec/faker/v3 v3.8.0
 	github.com/jinzhu/configor v1.2.1
 	github.com/joho/godotenv v1.4.0
 	github.com/labstack/gommon v0.3.1 // indirect

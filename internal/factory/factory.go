@@ -3,6 +3,7 @@ package factory
 import (
 	adapter "go-boiler-clean/internal/adapter"
 	"go-boiler-clean/internal/database"
+	"go-boiler-clean/internal/usecase"
 
 	"gorm.io/gorm"
 )
@@ -13,7 +14,10 @@ type (
 
 		Adapter struct {
 			OutBound *adapter.OutBound
+			InBound  *adapter.InBound
 		}
+
+		Usecase *usecase.Usecase
 	}
 )
 
@@ -22,6 +26,8 @@ func NewFactory() *Factory {
 	f.setupDb()
 	// f.SetupModelPsqlGorm()
 	f.setupAdapterOutBound()
+	f.setupUseCase()
+	f.setupAdapterInBound()
 
 	return f
 }
@@ -41,10 +47,14 @@ func (f *Factory) setupAdapterOutBound() {
 	f.Adapter.OutBound = adapter.NewOutBound(f.ConnectionGorm)
 }
 
-// func (f *Factory) SetupModelPsqlGorm() {
-// 	if f.ConnectionGorm == nil {
-// 		panic("Failed setup model, db is undefined")
-// 	}
+func (f *Factory) setupUseCase() {
+	f.Usecase = usecase.New(
+		f.Adapter.OutBound.Orm.User,
+	)
+}
 
-// 	f.Model.PsqlGorm.User = modelPsqlGorm.NewUser(f.ConnectionGorm)
-// }
+func (f *Factory) setupAdapterInBound() {
+	f.Adapter.InBound = adapter.NewInBound(
+		f.Usecase.UsecaseUser,
+	)
+}

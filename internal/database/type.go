@@ -36,12 +36,6 @@ type dbPostgreSQL struct {
 	AutoMigrate bool
 }
 
-type dbMySQL struct {
-	db
-	Charset   string
-	ParseTime string
-	Loc       string
-}
 type dbMongo struct {
 	db
 }
@@ -49,29 +43,18 @@ type dbMongo struct {
 func (c *dbPostgreSQL) Init() (interface{}, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", c.Host, c.User, c.Pass, c.Name, c.Port, c.SslMode, c.Tz)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	if c.AutoMigrate {
-		logrus.Info("auto migrate ya")
+		logrus.Info("[*] Gorm auto migration from entities")
 		db.AutoMigrate(Entity...)
 	}
 	return db, nil
 }
-
-// func (c *dbMySQL) Init() (interface{}, error) {
-// 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=%s&loc=%s", c.User, c.Pass, c.Host, c.Port, c.Name, c.Charset, c.ParseTime, c.Loc)
-// 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-// 		Logger: logger.Default.LogMode(logger.Info),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return db, nil
-// }
 
 func (c *dbMongo) Init() (interface{}, error) {
 	rb := bson.NewRegistryBuilder()

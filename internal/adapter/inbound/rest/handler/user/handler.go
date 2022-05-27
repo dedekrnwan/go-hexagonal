@@ -2,8 +2,7 @@ package user
 
 import (
 	"go-boiler-clean/entity"
-	dtoHttpEcho "go-boiler-clean/internal/adapter/inbound/http_echo/dto"
-	"go-boiler-clean/internal/factory"
+	dtoRest "go-boiler-clean/internal/adapter/inbound/rest/dto"
 	"go-boiler-clean/internal/usecase"
 	"go-boiler-clean/pkg/util/response"
 	"net/http"
@@ -15,15 +14,17 @@ type handler struct {
 	usecaseUser usecase.User
 }
 
-func NewHandler(f *factory.Factory) *handler {
+func NewHandler(
+	usecaseUser usecase.User,
+) *handler {
 	return &handler{
-		usecaseUser: usecase.NewUser(f.Adapter.OutBound.Gorm.User),
+		usecaseUser,
 	}
 }
 
 func (h *handler) Get(c echo.Context) error {
 	ctx := c.Request().Context()
-	payload := dtoHttpEcho.NewHttpQuery(c.Request(), entity.User{})
+	payload := dtoRest.NewHttpQuery(c.Request(), entity.User{})
 	if err := c.Bind(payload); err != nil {
 		return c.String(http.StatusBadRequest, "testing user failed")
 	}

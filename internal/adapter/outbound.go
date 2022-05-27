@@ -1,19 +1,23 @@
 package adapter
 
 import (
-	adapterOutBoundGorm "go-boiler-clean/internal/adapter/outbound/gorm"
+	"go-boiler-clean/internal/adapter/outbound/orm"
 
 	"gorm.io/gorm"
 )
 
 type (
 	OutBound struct {
-		Gorm *adapterOutBoundGorm.Gorm
+		Orm *orm.Orm
 	}
 )
 
-func NewOutBound(connection *gorm.DB) *OutBound {
+func NewOutBound(
+	gormConnection *gorm.DB,
+) *OutBound {
+	ormInstance := orm.New(gormConnection)
+
 	return &OutBound{
-		Gorm: adapterOutBoundGorm.New(connection),
+		Orm: ormInstance,
 	}
 }

@@ -1,14 +1,22 @@
 package adapter
 
 import (
-	"gorm.io/gorm"
+	"go-boiler-clean/internal/adapter/inbound/rest"
+	"go-boiler-clean/internal/usecase"
 )
 
 type (
 	InBound struct {
+		Rest rest.Rest
 	}
 )
 
-func NewInBound(connection *gorm.DB) *InBound {
-	return &InBound{}
+func NewInBound(
+	usecaseUser usecase.User,
+) *InBound {
+	restInstance := rest.New(usecaseUser)
+
+	return &InBound{
+		Rest: restInstance,
+	}
 }

@@ -1,4 +1,4 @@
-package adapterOutBoundGorm
+package orm
 
 import (
 	"context"

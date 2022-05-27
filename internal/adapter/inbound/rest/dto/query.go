@@ -1,4 +1,4 @@
-package dtoHttpEcho
+package restDto
 
 import (
 	"fmt"
@@ -57,5 +57,4 @@ func (q *HttpQuery[T]) BindFilters() {
 			}
 		}
 	}
-
 }

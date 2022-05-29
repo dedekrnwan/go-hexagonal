@@ -61,7 +61,7 @@ func (m *base[T]) Find(ctx context.Context, search string, filters []dto.Filter,
 func (m *base[T]) FindOne(ctx context.Context, id int) (*T, error) {
 	query := m.connectionGrom.Model(m.entity)
 	result := new(T)
-	err := query.First(result).Error
+	err := query.Where("id", id).First(result).Error
 	if err != nil {
 		return nil, err
 	}

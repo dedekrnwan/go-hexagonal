@@ -2,6 +2,7 @@ package orm
 
 import (
 	"context"
+	"go-boiler-clean/dto"
 	"go-boiler-clean/entity"
 
 	"gorm.io/gorm"
@@ -9,17 +10,17 @@ import (
 
 type (
 	User interface {
-		Base[entity.User]
+		Base[entity.User, dto.User]
 		Some(ctx context.Context, id int) error
 	}
 
 	user struct {
-		Base[entity.User]
+		Base[entity.User, dto.User]
 	}
 )
 
 func NewUser(connectionGrom *gorm.DB) User {
-	base := NewBase(connectionGrom, entity.User{})
+	base := NewBase(connectionGrom, entity.User{}, dto.User{})
 	return &user{
 		base,
 	}

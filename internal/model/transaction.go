@@ -2,12 +2,13 @@ package model
 
 import (
 	"context"
+	"go-boiler-clean/dto"
 	"go-boiler-clean/entity"
 )
 
 type (
 	Transaction interface {
-		Base[entity.Transaction]
+		Base[entity.Transaction, dto.Transaction]
 		Some(ctx context.Context, id int) error
 	}
 )

@@ -13,14 +13,19 @@ type (
 	}
 	rest struct {
 		usecaseUser usecase.User
+		usecaseAuth usecase.Auth
 		e           *echo.Echo
 	}
 )
 
-func New(usecaseUser usecase.User) Rest {
+func New(
+	usecaseUser usecase.User,
+	usecaseAuth usecase.Auth,
+) Rest {
 	e := echo.New()
 	return &rest{
 		usecaseUser,
+		usecaseAuth,
 		e,
 	}
 }

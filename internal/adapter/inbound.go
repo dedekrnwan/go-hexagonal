@@ -13,8 +13,9 @@ type (
 
 func NewInBound(
 	usecaseUser usecase.User,
+	usecasAuth usecase.Auth,
 ) *InBound {
-	restInstance := rest.New(usecaseUser)
+	restInstance := rest.New(usecaseUser, usecasAuth)
 
 	return &InBound{
 		Rest: restInstance,

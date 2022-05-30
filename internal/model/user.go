@@ -9,6 +9,6 @@ import (
 type (
 	User interface {
 		Base[entity.User, dto.User]
-		Some(ctx context.Context, id int) error
+		CountByEmail(ctx context.Context, email string) (int64, error)
 	}
 )

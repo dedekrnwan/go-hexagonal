@@ -11,7 +11,7 @@ import (
 type (
 	User interface {
 		Base[entity.User, dto.User]
-		Some(ctx context.Context, id int) error
+		CountByEmail(ctx context.Context, email string) (int64, error)
 	}
 
 	user struct {
@@ -26,6 +26,7 @@ func NewUser(connectionGrom *gorm.DB) User {
 	}
 }
 
-func (m *user) Some(ctx context.Context, id int) error {
-	return nil
+func (m *user) CountByEmail(ctx context.Context, email string) (count int64, err error) {
+	err = m.GetDBConnector().Model(entity.User{}).WithContext(ctx).Where("email", email).Count(&count).Error
+	return
 }

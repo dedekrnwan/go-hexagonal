@@ -46,5 +46,6 @@ func (f *Factory) setupUseCase() {
 func (f *Factory) setupAdapterInBound() {
 	f.Adapter.InBound = adapter.NewInBound(
 		f.Usecase.UsecaseUser,
+		f.Usecase.UsecaseAuth,
 	)
 }

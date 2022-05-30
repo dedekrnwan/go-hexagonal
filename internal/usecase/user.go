@@ -25,7 +25,3 @@ func NewUser(
 		modelUser: modelUser,
 	}
 }
-
-func (u *user) Custom() (string, error) {
-	return "", nil
-}

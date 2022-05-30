@@ -30,7 +30,10 @@ func init() {
 func main() {
 
 	//initialize all needs (db conn, adapter outbound)
-	f := initFactory()
+	f, err := factory.NewFactory()
+	if err != nil {
+		panic(err)
+	}
 	starterEcho, stopperEcho := f.Adapter.InBound.Rest.PrepareEcho()
 
 	wg := new(sync.WaitGroup)
@@ -49,10 +52,6 @@ func main() {
 		wg.Done()
 	}()
 	wg.Wait()
-}
-
-func initFactory() *factory.Factory {
-	return factory.NewFactory()
 }
 
 func startProcessAtBackground(ps ...func() error) {

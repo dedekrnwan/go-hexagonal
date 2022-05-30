@@ -2,7 +2,6 @@ package factory
 
 import (
 	adapter "go-boiler-clean/internal/adapter"
-	"go-boiler-clean/internal/database"
 	"go-boiler-clean/internal/usecase"
 
 	"gorm.io/gorm"
@@ -21,30 +20,21 @@ type (
 	}
 )
 
-func NewFactory() *Factory {
-	f := &Factory{}
-	f.setupDb()
-	// f.SetupModelPsqlGorm()
-	f.setupAdapterOutBound()
+func NewFactory() (f *Factory, err error) {
+	f = &Factory{}
+	err = f.setupAdapterOutBound()
+	if err != nil {
+		return
+	}
+
 	f.setupUseCase()
 	f.setupAdapterInBound()
 
-	return f
+	return
 }
-
-func (f *Factory) setupDb() {
-	database.Init()
-
-	conn := "postgres"
-	db, err := database.Connection[gorm.DB](conn)
-	if err != nil {
-		panic("Failed setup db, connection is undefined")
-	}
-	f.ConnectionGorm = db
-}
-
-func (f *Factory) setupAdapterOutBound() {
-	f.Adapter.OutBound = adapter.NewOutBound(f.ConnectionGorm)
+func (f *Factory) setupAdapterOutBound() (err error) {
+	f.Adapter.OutBound, err = adapter.NewOutBound()
+	return
 }
 
 func (f *Factory) setupUseCase() {

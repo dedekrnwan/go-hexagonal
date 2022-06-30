@@ -1,15 +1,12 @@
 package main
 
 import (
-	"context"
 	"go-boiler-clean/internal/adapter/driving/rest"
 	"go-boiler-clean/internal/config"
 	"go-boiler-clean/internal/factory"
 	"go-boiler-clean/pkg/util"
 	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -45,8 +42,8 @@ func main() {
 
 	wg.Add(2)
 	go func() {
-		startProcessAtBackground(starterEcho)
-		gracefullStopProcessAtBackground(time.Second*10, stopperEcho)
+		util.StartProcessAtBackground(starterEcho)
+		util.GracefullStopProcessAtBackground(time.Second*10, stopperEcho)
 		wg.Done()
 	}()
 
@@ -57,30 +54,4 @@ func main() {
 		wg.Done()
 	}()
 	wg.Wait()
-}
-
-func startProcessAtBackground(ps ...func() error) {
-	for _, p := range ps {
-		if p != nil {
-			go func(_p func() error) {
-				_ = _p()
-			}(p)
-		}
-	}
-}
-
-func gracefullStopProcessAtBackground(duration time.Duration, ps ...func(ctx context.Context) error) {
-	ch := make(chan os.Signal, 2)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	<-ch
-
-	for _, p := range ps {
-		if p == nil {
-			continue
-		}
-		ctx, stop := context.WithTimeout(context.Background(), duration)
-		defer stop()
-		_ = p(ctx)
-
-	}
 }

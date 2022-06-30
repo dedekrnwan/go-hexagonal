@@ -1,8 +1,7 @@
-package user
+package repository
 
 import (
 	"context"
-	"go-boiler-clean/internal/adapter/driven/orm/base"
 	"go-boiler-clean/internal/adapter/driven/orm/entity"
 	"go-boiler-clean/internal/model/sample"
 
@@ -11,19 +10,19 @@ import (
 
 type (
 	User interface {
-		base.Base[entity.User, sample.UserEntity]
+		Common[entity.User, sample.UserEntity]
 		CountByEmail(ctx context.Context, email string) (int64, error)
 	}
 
 	user struct {
-		base.Base[entity.User, sample.UserEntity]
+		Common[entity.User, sample.UserEntity]
 	}
 )
 
 func NewUser(connectionGrom *gorm.DB) User {
-	base := base.NewBase(connectionGrom, entity.User{}, sample.UserEntity{})
+	common := NewCommon(connectionGrom, entity.User{}, sample.UserEntity{})
 	return &user{
-		base,
+		common,
 	}
 }
 

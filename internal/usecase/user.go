@@ -6,11 +6,11 @@ import (
 
 type (
 	User interface {
-		Base[sample.UserEntity, sample.UserEntity]
+		Common[sample.UserEntity, sample.UserEntity]
 	}
 
 	user struct {
-		Base[sample.UserEntity, sample.UserEntity]
+		Common[sample.UserEntity, sample.UserEntity]
 
 		mdlUser sample.User
 	}
@@ -20,7 +20,7 @@ func NewUser(
 	mdlUser sample.User,
 ) User {
 	return &user{
-		Base:    NewBase[sample.UserEntity, sample.UserEntity](mdlUser),
+		Common:  NewCommon[sample.UserEntity, sample.UserEntity](mdlUser),
 		mdlUser: mdlUser,
 	}
 }

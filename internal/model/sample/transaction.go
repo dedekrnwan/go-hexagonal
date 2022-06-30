@@ -1,16 +1,16 @@
 package sample
 
 import (
-	"go-boiler-clean/internal/model/base"
+	"go-boiler-clean/internal/model/common"
 )
 
 type (
 	Transaction interface {
-		base.Base[TransactionEntity, TransactionEntity]
+		common.Common[TransactionEntity, TransactionEntity]
 	}
 
 	TransactionEntity struct {
-		BaseEntity
+		CommonEntity
 
 		Type        string  `json:"type" bson:"type"`
 		Amount      float64 `json:"amount" bson:"amount"`

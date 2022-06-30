@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type BaseEntity struct {
+type CommonEntity struct {
 	ID int `json:"id" gorm:"primaryKey;autoIncrement;" param:"id" swaggerignore:"true"`
 
 	CreatedAt time.Time `json:"created_at" swaggerignore:"true"`

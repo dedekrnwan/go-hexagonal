@@ -1,4 +1,4 @@
-package base
+package repository
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 )
 
 type (
-	Base[T any, Y any] interface {
+	Common[T any, Y any] interface {
 		GetDBConnector() *gorm.DB
 
 		Find(ctx context.Context, search string, filters []dto.Filter, ascending []string, descending []string, pagination dto.Pagination) ([]Y, *dto.PaginationInfo, error)
@@ -27,24 +27,24 @@ type (
 		buildPagination(ctx context.Context, tx *gorm.DB, pagination dto.Pagination) *dto.PaginationInfo
 	}
 
-	base[T any, Y any] struct {
+	common[T any, Y any] struct {
 		connectionGrom *gorm.DB
 		entity         T
 	}
 )
 
-func NewBase[T any, Y any](connectionGrom *gorm.DB, entity T, dt Y) Base[T, Y] {
-	return &base[T, Y]{
+func NewCommon[T any, Y any](connectionGrom *gorm.DB, entity T, dt Y) Common[T, Y] {
+	return &common[T, Y]{
 		connectionGrom,
 		entity,
 	}
 }
 
-func (m *base[T, Y]) GetDBConnector() *gorm.DB {
+func (m *common[T, Y]) GetDBConnector() *gorm.DB {
 	return m.connectionGrom
 }
 
-func (m *base[T, Y]) Find(ctx context.Context, search string, filters []dto.Filter, ascending []string, descending []string, pagination dto.Pagination) ([]Y, *dto.PaginationInfo, error) {
+func (m *common[T, Y]) Find(ctx context.Context, search string, filters []dto.Filter, ascending []string, descending []string, pagination dto.Pagination) ([]Y, *dto.PaginationInfo, error) {
 	query := m.connectionGrom.Model(m.entity)
 
 	m.buildFilter(ctx, query, filters)
@@ -59,7 +59,7 @@ func (m *base[T, Y]) Find(ctx context.Context, search string, filters []dto.Filt
 	return result, info, nil
 }
 
-func (m *base[T, Y]) FindOne(ctx context.Context, id int) (*Y, error) {
+func (m *common[T, Y]) FindOne(ctx context.Context, id int) (*Y, error) {
 	query := m.connectionGrom.Model(m.entity)
 	result := new(Y)
 	err := query.Where("id", id).First(result).Error
@@ -69,7 +69,7 @@ func (m *base[T, Y]) FindOne(ctx context.Context, id int) (*Y, error) {
 	return result, nil
 }
 
-func (m *base[T, Y]) CreateOne(ctx context.Context, data *Y) (*Y, error) {
+func (m *common[T, Y]) CreateOne(ctx context.Context, data *Y) (*Y, error) {
 	query := m.connectionGrom.Model(m.entity)
 	err := query.Create(data).Error
 	if err != nil {
@@ -90,7 +90,7 @@ func (m *base[T, Y]) CreateOne(ctx context.Context, data *Y) (*Y, error) {
 	return result, err
 }
 
-func (m *base[T, Y]) CreateMany(ctx context.Context, data []Y) ([]Y, error) {
+func (m *common[T, Y]) CreateMany(ctx context.Context, data []Y) ([]Y, error) {
 	err := m.connectionGrom.Model(m.entity).Create(&data).Error
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func (m *base[T, Y]) CreateMany(ctx context.Context, data []Y) ([]Y, error) {
 	return result, err
 }
 
-func (m *base[T, Y]) UpdateOne(ctx context.Context, id int, data *Y) (*Y, error) {
+func (m *common[T, Y]) UpdateOne(ctx context.Context, id int, data *Y) (*Y, error) {
 	err := m.connectionGrom.Model(data).Updates(data).Error
 	if err != nil {
 		return nil, err
@@ -130,11 +130,11 @@ func (m *base[T, Y]) UpdateOne(ctx context.Context, id int, data *Y) (*Y, error)
 	return result, err
 }
 
-func (m *base[T, Y]) DeleteOne(ctx context.Context, id int) error {
+func (m *common[T, Y]) DeleteOne(ctx context.Context, id int) error {
 	return m.connectionGrom.Model(m.entity).Where("id = ?", id).Error
 }
 
-func (m *base[T, Y]) buildFilter(ctx context.Context, tx *gorm.DB, filters []dto.Filter) {
+func (m *common[T, Y]) buildFilter(ctx context.Context, tx *gorm.DB, filters []dto.Filter) {
 	for _, v := range filters {
 		if v.Operator == "like" {
 			v.Value = fmt.Sprintf("%s%s%s", "%", v.Value, "%")
@@ -143,10 +143,10 @@ func (m *base[T, Y]) buildFilter(ctx context.Context, tx *gorm.DB, filters []dto
 	}
 }
 
-// func (m *base[T, Y]) buildOrder(ctx context.Context, tx *gorm.DB, ascending []string, descending []string) {
+// func (m *common[T, Y]) buildOrder(ctx context.Context, tx *gorm.DB, ascending []string, descending []string) {
 // }
 
-func (m *base[T, Y]) buildPagination(ctx context.Context, tx *gorm.DB, pagination dto.Pagination) *dto.PaginationInfo {
+func (m *common[T, Y]) buildPagination(ctx context.Context, tx *gorm.DB, pagination dto.Pagination) *dto.PaginationInfo {
 	info := &dto.PaginationInfo{}
 	if pagination.Page != nil {
 		limit := 10

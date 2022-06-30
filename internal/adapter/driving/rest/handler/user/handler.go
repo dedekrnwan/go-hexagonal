@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"go-boiler-clean/internal/adapter/driving/rest/dto"
 	"go-boiler-clean/internal/factory"
 	"go-boiler-clean/internal/model/sample"
@@ -40,7 +41,8 @@ func (h *handler) Get(c echo.Context) error {
 	// }
 	// fmt.Println(payload.Search)
 	// fmt.Println(payload.Ascending)
-	data, info, err := h.usecaseUser.Find(ctx, payload.Search, payload.Filters, payload.Ascending, payload.Descending, payload.Pagination)
+	fmt.Println(payload.Filters)
+	data, info, err := h.usecaseUser.Find(ctx, payload.Search, payload.Filters, payload.Ascending, payload.Descending, payload.Pagination, payload.Preloads)
 	if err != nil {
 		return response.ErrorResponse(err).Send(c)
 	}

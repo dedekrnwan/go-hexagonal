@@ -2,8 +2,8 @@ package dto
 
 type (
 	Pagination struct {
-		Page  *int `query:"page" json:"page" bson:"page"`
-		Limit *int `query:"limit" json:"limit" bson:"limit"`
+		Page  int `query:"page" json:"page" bson:"page"`
+		Limit int `query:"limit" json:"limit" bson:"limit"`
 	}
 
 	PaginationInfo struct {

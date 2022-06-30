@@ -80,7 +80,7 @@ func (s *UserSuite) TestFindOne() {
 				AddRow(user.ID, user.FirstName, user.LastName, user.Email, user.Phone, user.IsActive, user.Password),
 		)
 
-	res, err := s.model.FindOne(context.TODO(), user.ID)
+	res, err := s.model.FindOne(context.TODO(), user.ID, nil)
 
 	require.NoError(s.T(), err)
 	require.Nil(s.T(), deep.Equal(&user, res))
@@ -102,12 +102,9 @@ func (s *UserSuite) TestFind() {
 	users = append(users, user)
 
 	infoPagination := dto.PaginationInfo{
-		Pagination: dto.Pagination{
-			Page:  nil,
-			Limit: nil,
-		},
-		Count:     0,
-		TotalPage: 0,
+		Pagination: dto.Pagination{},
+		Count:      0,
+		TotalPage:  0,
 	}
 
 	reflectUser := reflect.ValueOf(userOutput)
@@ -130,7 +127,7 @@ func (s *UserSuite) TestFind() {
 				AddRow(user.ID, user.FirstName, user.LastName, user.Email, user.Phone, user.IsActive, user.Password),
 		)
 
-	res, info, err := s.model.Find(context.TODO(), "", []dto.Filter{}, []string{}, []string{}, dto.Pagination{})
+	res, info, err := s.model.Find(context.TODO(), "", []dto.Filter{}, []string{}, []string{}, dto.Pagination{}, nil)
 
 	require.NoError(s.T(), err)
 	require.Nil(s.T(), deep.Equal(users, res))

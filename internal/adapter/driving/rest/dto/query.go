@@ -1,11 +1,11 @@
 package dto
 
 import (
-	"fmt"
-	"go-boiler-clean/dto"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"go-boiler-clean/dto"
 )
 
 type (
@@ -15,6 +15,7 @@ type (
 		Ascending  []string     `json:"ascending" query:"ascending" bson:"ascending"`
 		Descending []string     `json:"descending" query:"descending" bson:"descending"`
 		Filters    []dto.Filter `json:"filters" bson:"filters"`
+		Preloads   []string     `json:"preloads" bson:"preloads" query:"preloads"`
 		entity     T            `json:"-"`
 
 		request *http.Request `json:"-"`
@@ -41,17 +42,16 @@ func (q *HttpQuery[T]) BindFilters() {
 			}
 
 			for i := 0; i < reflectEntity.NumField(); i++ {
-				if reflectEntity.Type().Field(i).Tag.Get("json") == field[1] {
+				if reflectEntity.Type().Field(i).Tag.Get("json") == field[len(field)-1] {
 					filter := dto.Filter{
-						Field: fmt.Sprintf("%s", field[1]),
+						Field: field[len(field)-1],
 						Value: queries[key][0],
 					}
 					if len(field) == 2 {
 						filter.Operator = "="
 					} else {
-						filter.Operator = field[2]
+						filter.Operator = field[1]
 					}
-
 					q.Filters = append(q.Filters, filter)
 				}
 			}

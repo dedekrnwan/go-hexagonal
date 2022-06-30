@@ -3,7 +3,7 @@ package metadata
 import (
 	"context"
 	"fmt"
-	"go-boiler-clean/entity"
+	"go-boiler-clean/internal/entity"
 )
 
 type (

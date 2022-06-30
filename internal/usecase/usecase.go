@@ -1,19 +1,19 @@
 package usecase
 
-import "go-boiler-clean/internal/model"
+import (
+	"go-boiler-clean/internal/model/sample"
+)
 
 type (
 	Usecase struct {
-		UsecaseUser User
-		UsecaseAuth Auth
+		User User
 	}
 )
 
 func New(
-	modelUser model.User,
+	mdlUser sample.User,
 ) *Usecase {
 	return &Usecase{
-		UsecaseUser: NewUser(modelUser),
-		UsecaseAuth: NewAuth(modelUser),
+		User: NewUser(mdlUser),
 	}
 }

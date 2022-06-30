@@ -1,28 +1,26 @@
 package usecase
 
 import (
-	"go-boiler-clean/dto"
-	"go-boiler-clean/entity"
-	"go-boiler-clean/internal/model"
+	"go-boiler-clean/internal/model/sample"
 )
 
 type (
 	User interface {
-		Base[entity.User, dto.User]
+		Base[sample.UserEntity, sample.UserEntity]
 	}
 
 	user struct {
-		Base[entity.User, dto.User]
+		Base[sample.UserEntity, sample.UserEntity]
 
-		modelUser model.User
+		mdlUser sample.User
 	}
 )
 
 func NewUser(
-	modelUser model.User,
+	mdlUser sample.User,
 ) User {
 	return &user{
-		Base:      NewBase[entity.User, dto.User](modelUser),
-		modelUser: modelUser,
+		Base:    NewBase[sample.UserEntity, sample.UserEntity](mdlUser),
+		mdlUser: mdlUser,
 	}
 }

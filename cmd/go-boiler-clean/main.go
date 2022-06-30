@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"go-boiler-clean/internal/adapter/driving/rest"
 	"go-boiler-clean/internal/config"
 	"go-boiler-clean/internal/factory"
 	"go-boiler-clean/pkg/util"
@@ -28,13 +29,17 @@ func init() {
 }
 
 func main() {
-
 	//initialize all needs (db conn, adapter outbound)
 	f, err := factory.NewFactory()
 	if err != nil {
 		panic(err)
 	}
-	starterEcho, stopperEcho := f.Adapter.InBound.Rest.PrepareEcho()
+
+	//rest
+	restInstance := rest.New(f)
+	starterEcho, stopperEcho := restInstance.PrepareEcho()
+
+	//grpc
 
 	wg := new(sync.WaitGroup)
 

@@ -1,7 +1,8 @@
 package factory
 
 import (
-	adapter "go-boiler-clean/internal/adapter"
+	"go-boiler-clean/internal/adapter/driven/database"
+	"go-boiler-clean/internal/adapter/driven/orm"
 	"go-boiler-clean/internal/usecase"
 
 	"gorm.io/gorm"
@@ -11,41 +12,34 @@ type (
 	Factory struct {
 		ConnectionGorm *gorm.DB
 
-		Adapter struct {
-			OutBound *adapter.OutBound
-			InBound  *adapter.InBound
-		}
-
 		Usecase *usecase.Usecase
+
+		Orm *orm.Orm
 	}
 )
 
 func NewFactory() (f *Factory, err error) {
 	f = &Factory{}
-	err = f.setupAdapterOutBound()
+	err = f.setupAdapterOutDrivenOrm()
 	if err != nil {
 		return
 	}
 
 	f.setupUseCase()
-	f.setupAdapterInBound()
 
 	return
 }
-func (f *Factory) setupAdapterOutBound() (err error) {
-	f.Adapter.OutBound, err = adapter.NewOutBound()
-	return
+func (f *Factory) setupAdapterOutDrivenOrm() (err error) {
+	database.Init()
+
+	gormConnection, err := database.Connection[gorm.DB]("postgres")
+
+	f.Orm = orm.New(gormConnection)
+	return nil
 }
 
 func (f *Factory) setupUseCase() {
 	f.Usecase = usecase.New(
-		f.Adapter.OutBound.Orm.User,
-	)
-}
-
-func (f *Factory) setupAdapterInBound() {
-	f.Adapter.InBound = adapter.NewInBound(
-		f.Usecase.UsecaseUser,
-		f.Usecase.UsecaseAuth,
+		f.Orm.User,
 	)
 }

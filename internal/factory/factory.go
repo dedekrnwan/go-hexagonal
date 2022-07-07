@@ -1,7 +1,6 @@
 package factory
 
 import (
-	"go-boiler-clean/internal/adapter/driven/database"
 	"go-boiler-clean/internal/adapter/driven/orm"
 	"go-boiler-clean/internal/usecase"
 
@@ -20,7 +19,9 @@ type (
 
 func NewFactory() (f *Factory, err error) {
 	f = &Factory{}
-	err = f.setupAdapterOutDrivenOrm()
+
+	//orm
+	f.Orm, err = orm.New()
 	if err != nil {
 		return
 	}
@@ -28,14 +29,6 @@ func NewFactory() (f *Factory, err error) {
 	f.setupUseCase()
 
 	return
-}
-func (f *Factory) setupAdapterOutDrivenOrm() (err error) {
-	database.Init()
-
-	gormConnection, err := database.Connection[gorm.DB]("postgres")
-
-	f.Orm = orm.New(gormConnection)
-	return nil
 }
 
 func (f *Factory) setupUseCase() {

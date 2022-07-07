@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"go-boiler-clean/dto"
-	"go-boiler-clean/internal/adapter/driven/orm/entity"
+	"go-boiler-clean/internal/model/sample"
 	"reflect"
 	"regexp"
 	"strings"
@@ -53,8 +53,8 @@ func (s *UserSuite) SetupTest() {
 
 func (s *UserSuite) TestFindOne() {
 	isActive := true
-	userOutput := entity.User{}
-	user := entity.User{}
+	userOutput := sample.UserEntity{}
+	user := sample.UserEntity{}
 	user.ID = 1
 	user.FirstName = faker.FirstName
 	user.LastName = faker.LastName
@@ -72,7 +72,7 @@ func (s *UserSuite) TestFindOne() {
 	}
 	s.mock.ExpectQuery(
 		regexp.QuoteMeta(
-			`SELECT * FROM "users" WHERE "id" = $1 ORDER BY "users"."id" LIMIT 1`),
+			`SELECT "users"."id","users"."created_at","users"."created_by","users"."modified_at","users"."modified_by","users"."deleted_at","users"."deleted_by","users"."first_name","users"."last_name","users"."email","users"."phone","users"."is_active","users"."password" FROM "users" WHERE "id" = $1 ORDER BY "users"."id" LIMIT 1`),
 	).
 		WithArgs(user.ID).
 		WillReturnRows(
@@ -88,8 +88,8 @@ func (s *UserSuite) TestFindOne() {
 
 func (s *UserSuite) TestFind() {
 	isActive := true
-	userOutput := entity.User{}
-	user := entity.User{}
+	userOutput := sample.UserEntity{}
+	user := sample.UserEntity{}
 	user.ID = 1
 	user.FirstName = faker.FirstName
 	user.LastName = faker.LastName
@@ -98,7 +98,7 @@ func (s *UserSuite) TestFind() {
 	user.IsActive = &isActive
 	user.Password = faker.PASSWORD
 
-	users := []entity.User{}
+	users := []sample.UserEntity{}
 	users = append(users, user)
 
 	infoPagination := dto.PaginationInfo{
@@ -120,7 +120,7 @@ func (s *UserSuite) TestFind() {
 
 	s.mock.ExpectQuery(
 		regexp.QuoteMeta(
-			`SELECT * FROM "users"`),
+			`SELECT "users"."id","users"."created_at","users"."created_by","users"."modified_at","users"."modified_by","users"."deleted_at","users"."deleted_by","users"."first_name","users"."last_name","users"."email","users"."phone","users"."is_active","users"."password" FROM "users"`),
 	).
 		WillReturnRows(
 			sqlmock.NewRows(cols).
@@ -136,7 +136,7 @@ func (s *UserSuite) TestFind() {
 
 func (s *UserSuite) TestCreateOne() {
 	isActive := true
-	user := entity.User{}
+	user := sample.UserEntity{}
 	user.ID = 1
 	user.FirstName = faker.FirstName
 	user.LastName = faker.LastName

@@ -3,38 +3,75 @@ version: "3.6"
 services:
   consul-server1:
     image: hashicorp/consul:1.11.2
-    container_name: consul-server1
     restart: always
     volumes:
      - ./consul/server1.json:/consul/config/server1.json:ro
      - ./consul/certs/:/consul/config/certs/:ro
     networks:
-      - consul
+      - swarm-overlay-net
     ports:
       - "8500:8500"
       - "8600:8600/tcp"
       - "8600:8600/udp"
     command: "agent -bootstrap-expect=3"
+    deploy:
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
   consul-server2:
     image: hashicorp/consul:1.11.2
-    container_name: consul-server2
     restart: always
     volumes:
      - ./consul/server2.json:/consul/config/server2.json:ro
      - ./consul/certs/:/consul/config/certs/:ro
     networks:
-      - consul
+      - swarm-overlay-net
     command: "agent -bootstrap-expect=3"
+    depends_on:
+      - consul-server1
+    deploy:
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
   consul-server3:
-    container_name: consul-server3
     image: hashicorp/consul:1.11.2
     restart: always
     volumes:
      - ./consul/server3.json:/consul/config/server3.json:ro
      - ./consul/certs/:/consul/config/certs/:ro
     networks:
-      - consul
+      - swarm-overlay-net
     command: "agent -bootstrap-expect=3"
+    depends_on:
+      - consul-server1
+    deploy:
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
   consul-client:
     image: hashicorp/consul:1.11.2
     restart: always
@@ -42,8 +79,49 @@ services:
      - ./consul/client.json:/consul/config/client.json:ro
      - ./consul/certs/:/consul/config/certs/:ro
     networks:
-      - consul
-    command: "agent"
+      - swarm-overlay-net
+    command: agent
+    deploy:
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == worker
+  redis:
+    # image: bitnami/redis 
+    image: arm64v8/redis
+    volumes:
+      - type: volume
+        source: personal-redis-storage
+        target: /bitnami/redis/data
+    networks: 
+      - swarm-overlay-net
+    environment: 
+      - REDIS_PASSWORD=
+      - REDIS_PORT_NUMBER=6379
+    ports:
+      - '6379:6379'
+    deploy:
+      replicas: 1
+      restart_policy: 
+        condition: on-failure
+      resources:
+        limits: 
+          cpus: '0.8'
+          memory: 500m
+        reservations:
+          cpus: '0.4'
+          memory: 200m
 networks:
-  consul:
-    driver: bridge
+  swarm-overlay-net:
+    external: true
+
+volumes:
+  personal-redis-storage:
+    driver: local

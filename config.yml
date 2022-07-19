@@ -1,5 +1,5 @@
 server: 
-  appname: eclaim-core
+  appname: go-boiler-hex
   appkey: passphrasewhichneedstobe32bytes!
   port: 3001
   version: 1.0.1

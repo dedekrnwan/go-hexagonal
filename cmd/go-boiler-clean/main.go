@@ -47,11 +47,11 @@ func main() {
 		wg.Done()
 	}()
 
-	//sample multiple process
-	go func() {
-		time.Sleep(time.Second * 20)
-		logrus.Info("testing log")
-		wg.Done()
-	}()
+	// //sample multiple process
+	// go func() {
+	// 	time.Sleep(time.Second * 20)
+	// 	logrus.Info("testing log")
+	// 	wg.Done()
+	// }()
 	wg.Wait()
 }

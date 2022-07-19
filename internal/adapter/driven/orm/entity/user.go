@@ -10,5 +10,5 @@ type User struct {
 	IsActive  *bool  `json:"is_active" bson:"is_active"`
 	Password  string `json:"password" bson:"password"`
 
-	Transactions []*Transaction `json:"transactions,omitempty" bson:"transactions,omitempty" gorm:"foreignKey:UserId;references:ID"`
+	Transactions []Transaction `json:"transactions,omitempty" bson:"transactions,omitempty" gorm:"foreignKey:UserId;references:ID"`
 }

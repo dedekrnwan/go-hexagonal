@@ -1,10 +1,10 @@
 package user
 
 import (
+	"encoding/json"
 	"fmt"
 	"go-boiler-clean/internal/adapter/driving/rest/dto"
 	"go-boiler-clean/internal/factory"
-	"go-boiler-clean/internal/model/sample"
 	"go-boiler-clean/internal/usecase"
 	"go-boiler-clean/pkg/util/response"
 	"net/http"
@@ -24,7 +24,7 @@ func NewHandler(f *factory.Factory) *handler {
 
 func (h *handler) Get(c echo.Context) error {
 	ctx := c.Request().Context()
-	payload := dto.NewHttpQuery(c.Request(), sample.UserEntity{})
+	payload := dto.NewHttpQuery(c.Request(), dto.User{})
 	if err := c.Bind(payload); err != nil {
 		return c.String(http.StatusBadRequest, "testing user failed")
 	}
@@ -39,13 +39,25 @@ func (h *handler) Get(c echo.Context) error {
 	// for _, v := range payload.Ascending {
 	// 	fmt.Printf("%s n", v)
 	// }
-	// fmt.Println(payload.Search)
+	fmt.Println(payload.Search)
 	// fmt.Println(payload.Ascending)
-	fmt.Println(payload.Filters)
+
 	data, info, err := h.usecaseUser.Find(ctx, payload.Search, payload.Filters, payload.Ascending, payload.Descending, payload.Pagination, payload.Preloads)
 	if err != nil {
 		return response.ErrorResponse(err).Send(c)
 	}
 
-	return response.CustomSuccessBuilder(response.Constant.Success.OK.Code, data, "Data has been retrieve", info).Send(c)
+	//transform
+	bytes, err := json.Marshal(data)
+	if err != nil {
+		return response.ErrorResponse(err).Send(c)
+	}
+
+	result := []dto.User{}
+	err = json.Unmarshal(bytes, &result)
+	if err != nil {
+		return response.ErrorResponse(err).Send(c)
+	}
+
+	return response.CustomSuccessBuilder(response.Constant.Success.OK.Code, result, "Data has been retrieve", info).Send(c)
 }

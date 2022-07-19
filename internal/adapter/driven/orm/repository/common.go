@@ -65,9 +65,19 @@ func (m *common[T, Y]) Find(ctx context.Context, search string, filters []dto.Fi
 	m.buildPreload(ctx, query, preloads)
 	info := m.BuildPagination(ctx, query, pagination)
 
-	result := []Y{}
-	err := query.Find(&result).Error
+	data := []T{}
+	err := query.Find(&data).Error
+	if err != nil {
+		return nil, info, err
+	}
 
+	byteJson, err := json.Marshal(data)
+	if err != nil {
+		return nil, info, err
+	}
+
+	result := []Y{}
+	err = json.Unmarshal(byteJson, &result)
 	if err != nil {
 		return nil, info, err
 	}
@@ -174,6 +184,7 @@ func (m *common[T, Y]) buildFilter(ctx context.Context, tx *gorm.DB, filters []d
 
 func (m *common[T, Y]) buildPreload(ctx context.Context, tx *gorm.DB, preloads []string) {
 	for _, v := range preloads {
+		fmt.Println(v)
 		tx.Preload(v)
 	}
 }
@@ -199,21 +210,23 @@ func (m *common[T, Y]) buildOrder(ctx context.Context, tx *gorm.DB, ascending []
 
 loopColumns:
 	for i := 0; i < columns.NumField(); i++ {
-		column := columns.Type().Field(i).Tag.Get("json")
+		column := strings.Trim(columns.Type().Field(i).Tag.Get("json"), " ")
+		if strings.Contains(column, ",") {
+			column = strings.Split(column, ",")[0]
+		}
 
-		if _, ok := mapExcludes[column]; !ok {
+		if _, ok := mapExcludes[column]; ok {
 			continue loopColumns
 		}
 
-		if v, ok := mapAsc[column]; !ok {
-			ascending = append(ascending, v)
+		if _, ok := mapAsc[column]; ok {
+			ascending = append(ascending, column)
 		}
 
-		if v, ok := mapDesc[column]; !ok {
-			descending = append(descending, v)
+		if _, ok := mapDesc[column]; ok {
+			descending = append(descending, column)
 		}
 	}
-
 	if len(ascending) > 0 {
 		cols := strings.Join(ascending, ",")
 		tx.Order(fmt.Sprintf("%s asc", cols))

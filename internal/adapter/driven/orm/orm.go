@@ -16,6 +16,7 @@ type (
 )
 
 func New() (o *Orm, err error) {
+	database.Init()
 	connection, err := database.Connection[gorm.DB]("postgres")
 	o = &Orm{
 		User:        repository.NewUser(connection),

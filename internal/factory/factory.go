@@ -26,6 +26,7 @@ func NewFactory() (f *Factory, err error) {
 		return
 	}
 
+	//usecase
 	f.setupUseCase()
 
 	return

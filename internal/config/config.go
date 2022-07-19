@@ -53,7 +53,7 @@ func Load(path string) error {
 		path = "config.yml"
 	}
 	if os.Getenv("ENV") == "debug" {
-		path = "../../config.yml"
+		path = "../../config/config.yml"
 	}
 	if os.Getenv("ENV") != "development" && os.Getenv("ENV") != "debug" {
 		path = fmt.Sprintf("/run/secrets/%s", os.Getenv("CONFIG"))
